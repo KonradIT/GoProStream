@@ -50,7 +50,7 @@ if(CAMERA == "y"):
 		sleep(KEEP_ALIVE_PERIOD/1000)
 else:
 	PASSWORD=urllib.request.urlopen("http://10.5.5.9/bacpac/sd").read()
-	print(PASSWORD)
-	#urllib.request.urlopen("http://10.5.5.9/camera/PV?t=" + PASSWORD + "&p=%02").read()
-	#subprocess.Popen("ffplay -fflags nobuffer -f:v mpegts -probesize " + URL, shell=True)
+	#Needs testing
+	urllib.request.urlopen("http://10.5.5.9/camera/PV?t=" + PASSWORD + "&p=%02").read()
+	subprocess.Popen("ffplay -fflags nobuffer -f:v mpegts -probesize " + URL, shell=True)
 
