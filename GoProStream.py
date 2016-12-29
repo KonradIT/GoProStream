@@ -33,7 +33,7 @@ def gopro_live():
 	MESSAGE = get_command_msg(KEEP_ALIVE_CMD)
 	URL = "http://10.5.5.9:8080/live/amba.m3u8"
 	response = urllib.request.urlopen('http://10.5.5.9/gp/gpControl/info').read()
-	if b"HD4" in response or b"HD3.2" in response or b"HD5" in response:
+	if b"HD4" in response or b"HD3.2" in response or b"HD5" in response or b"HX" in response:
 		print("HERO4/HERO5/HERO+ camera")
 		##
 		## HTTP GETs the URL that tells the GoPro to start streaming.
