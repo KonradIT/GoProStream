@@ -1,6 +1,6 @@
 ## GoPro Instant Streaming v1.0
 ##
-## By @Sonof8Bits (Python code) and @KonradIT (GoPro API hacks)
+## By @Sonof8Bits and @KonradIT
 ##
 ## 1. Connect your desktop or laptop to your GoPro via WIFI.
 ## 2. Run this script.
@@ -17,6 +17,7 @@ import urllib.request
 import subprocess
 from time import sleep
 import signal
+import json
 
 def get_command_msg(id):
 	return "_GPHD_:%u:%u:%d:%1lf\n" % (0, 0, 2, 0)
@@ -46,6 +47,16 @@ def gopro_live():
 		print("message:", MESSAGE)
 		print("Press ctrl+C to quit this application.\n")
 
+		## GoPro HERO4 Session needs status 31 to be greater or equal than 1 in order to start the live feed.
+		if b"HX" in response:
+			connectedStatus=False
+			while connectedStatus == False:
+				req=urllib.request.urlopen("http://10.5.5.9/gp/gpControl/status")
+				data = req.read()
+				encoding = req.info().get_content_charset('utf-8')
+				json_data = json.loads(data.decode(encoding))
+				if json_data["status"]["31"] >= 1:
+					connectedStatus=True
 		##
 		## Opens the stream over udp in ffplay. This is a known working configuration by Reddit user hoppjerka:
 		## https://www.reddit.com/r/gopro/comments/2md8hm/how_to_livestream_from_a_gopro_hero4/cr1b193
