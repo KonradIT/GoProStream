@@ -5,6 +5,9 @@
 ## 1. Connect your desktop or laptop to your GoPro via WIFI.
 ## 2. Run this script.
 ##
+## Supported cameras:
+## GoPro HERO5 (incl. Session), HERO4 (incl. Session), HERO+, HERO3+, HERO3, HERO2 w/ WiFi BacPac.
+##
 ## That's all! When done, press CTRL+C to quit this application.
 ##
 
