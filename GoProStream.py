@@ -22,8 +22,17 @@ import json
 def get_command_msg(id):
 	return "_GPHD_:%u:%u:%d:%1lf\n" % (0, 0, 2, 0)
 
+## Parameters:
+##
+VERBOSE=False
 ## Sends Record command to GoPro Camera, must be in Video mode!
-RECORD=True
+RECORD=False
+##
+## Saves the feed to a custom location
+SAVE=False
+SAVE_FILENAME="goprofeed2"
+SAVE_FORMAT="mp4"
+SAVE_LOCATION="/home/konrad/Videos/"
 
 def gopro_live():
 	UDP_IP = "10.5.5.9"
@@ -45,7 +54,7 @@ def gopro_live():
 		print("UDP target IP:", UDP_IP)
 		print("UDP target port:", UDP_PORT)
 		print("message:", MESSAGE)
-		print("Press ctrl+C to quit this application.\n")
+		print("Recording on camera: " + str(RECORD))
 
 		## GoPro HERO4 Session needs status 31 to be greater or equal than 1 in order to start the live feed.
 		if b"HX" in response:
@@ -61,15 +70,25 @@ def gopro_live():
 		## Opens the stream over udp in ffplay. This is a known working configuration by Reddit user hoppjerka:
 		## https://www.reddit.com/r/gopro/comments/2md8hm/how_to_livestream_from_a_gopro_hero4/cr1b193
 		##
-		subprocess.Popen("ffplay -loglevel panic -fflags nobuffer -f:v mpegts -probesize 8192 udp://:8554", shell=True)
-
+		loglevel_verbose=""
+		if VERBOSE==False:
+			loglevel_verbose = "-loglevel panic"
+		if SAVE == False:
+			subprocess.Popen("ffplay " + loglevel_verbose + " -fflags nobuffer -f:v mpegts -probesize 8192 udp://:8554", shell=True)
+		else:
+			print("Recording locally: " + str(SAVE))
+			print("Recording stored in: " + SAVE_LOCATION + SAVE_FILENAME + "." + SAVE_FORMAT)
+			print("Note: Preview is not available when saving the stream.")
+			SAVELOCATION=SAVE_LOCATION + SAVE_FILENAME + "." + SAVE_FORMAT
+			subprocess.Popen("ffmpeg -i 'udp://:8554' -fflags nobuffer -f:v mpegts -probesize 8192 " + SAVELOCATION, shell=True)
 		if sys.version_info.major >= 3:
 			MESSAGE = bytes(MESSAGE, "utf-8")
-
+		print("Press ctrl+C to quit this application.\n")
 		while True:
 			sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 			sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 			sleep(KEEP_ALIVE_PERIOD/1000)
+
 	else:
 		PASSWORD=urllib.request.urlopen("http://10.5.5.9/bacpac/sd").read()
 		#Needs testing
