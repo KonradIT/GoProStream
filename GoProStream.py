@@ -44,16 +44,7 @@ def gopro_live():
 
 	MESSAGE = get_command_msg(KEEP_ALIVE_CMD)
 	URL = "http://10.5.5.9:8080/live/amba.m3u8"
-	response = urllib.request.urlopen('http://10.5.5.9/camera/cv').read()
-	if b"Hero3" in response:
-		PASSWORD=urllib.request.urlopen("http://10.5.5.9/bacpac/sd").read()
-		print("HERO3/3+/2 camera")
-		Password =  str(PASSWORD, 'utf-8')
-		text=re.sub(r'\W+', '', Password)
-		urllib.request.urlopen("http://10.5.5.9/camera/PV?t=" + text + "&p=%02")
-		subprocess.Popen("ffplay " + URL, shell=True)
-	else:
-		response = urllib.request.urlopen('http://10.5.5.9/gp/gpControl/info').read()
+	response = urllib.request.urlopen('http://10.5.5.9/gp/gpControl/info').read()
 		if b"HD4" in response or b"HD3.2" in response or b"HD5" in response or b"HX" in response:
 			print("HERO4/HERO5/HERO+ camera")
 			##
@@ -99,6 +90,16 @@ def gopro_live():
 				sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 				sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 				sleep(KEEP_ALIVE_PERIOD/1000)
+		else:
+			response = urllib.request.urlopen('http://10.5.5.9/camera/cv').read()
+			if b"Hero3" in response:
+				PASSWORD=urllib.request.urlopen("http://10.5.5.9/bacpac/sd").read()
+				print("HERO3/3+/2 camera")
+				Password =  str(PASSWORD, 'utf-8')
+				text=re.sub(r'\W+', '', Password)
+				urllib.request.urlopen("http://10.5.5.9/camera/PV?t=" + text + "&p=%02")
+				subprocess.Popen("ffplay " + URL, shell=True)
+		
 
 
 def quit_gopro(signal, frame):
