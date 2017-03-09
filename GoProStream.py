@@ -44,9 +44,11 @@ def gopro_live():
 
 	MESSAGE = get_command_msg(KEEP_ALIVE_CMD)
 	URL = "http://10.5.5.9:8080/live/amba.m3u8"
-	response = urllib.request.urlopen('http://10.5.5.9/gp/gpControl/info').read()
-	if b"HD4" in response or b"HD3.2" in response or b"HD5" in response or b"HX" in response:
-		print("HERO4/HERO5/HERO+ camera")
+	response_raw = urllib.request.urlopen('http://10.5.5.9/gp/gpControl').read()
+	jsondata=json.loads(response_raw)
+	response=jsondata["info"]["firmware_version"]
+	if "HD4" in response or "HD3.2" in response or "HD5" in response or "HX" in response:
+		print(jsondata["info"]["model_name"]+"\n"+jsondata["info"]["firmware_version"])
 		##
 		## HTTP GETs the URL that tells the GoPro to start streaming.
 		##
@@ -59,7 +61,7 @@ def gopro_live():
 		print("Recording on camera: " + str(RECORD))
 
 		## GoPro HERO4 Session needs status 31 to be greater or equal than 1 in order to start the live feed.
-		if b"HX" in response:
+		if "HX" in response:
 			connectedStatus=False
 			while connectedStatus == False:
 				req=urllib.request.urlopen("http://10.5.5.9/gp/gpControl/status")
