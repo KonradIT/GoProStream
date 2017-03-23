@@ -2,19 +2,19 @@
 
 Tools for handling/displaying GoPro HTTP/UDP stream. Available in Python.
 
-###Dependencies:
+### Dependencies:
 
 Python:
 
 * FFMPEG
 * urllib
 
-##Screenshots:
+## Screenshots:
 
 ![](http://i.imgur.com/5wlh8yS.png) 
 
 
-##Compatible with:
+## Compatible with:
 
 - HERO3 
 - HERO3+
@@ -23,7 +23,7 @@ Python:
 - HERO+ (incl. LCD)
 - HERO5 (needs testing)
 
-##Flags:
+## Flags:
 
     VERBOSE=False
 
@@ -49,12 +49,12 @@ File format for saved video feed
 
 Location for saved video feed (needs to be changed to your username and directory)
 
-###Further instructions:
+### Further instructions:
 
 
 https://medium.com/@konrad_it/how-to-stream-from-a-gopro-camera-f4a164150797
 
 
-###Credit
+### Credit
 
 @SonOf8Bits
