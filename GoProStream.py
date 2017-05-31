@@ -31,10 +31,10 @@ VERBOSE=False
 RECORD=False
 ##
 ## Saves the feed to a custom location
-SAVE=False
+SAVE=True
 SAVE_FILENAME="goprofeed3"
-SAVE_FORMAT="mp4"
-SAVE_LOCATION="/home/konrad/Videos/"
+SAVE_FORMAT="ts"
+SAVE_LOCATION="/tmp/"
 
 def gopro_live():
 	UDP_IP = "10.5.5.9"
@@ -80,11 +80,15 @@ def gopro_live():
 		if SAVE == False:
 			subprocess.Popen("ffplay " + loglevel_verbose + " -fflags nobuffer -f:v mpegts -probesize 8192 udp://:8554", shell=True)
 		else:
+			if SAVE_FORMAT=="ts":
+				TS_PARAMS = " -acodec copy -vcodec copy "
+			else:
+				TS_PARAMS = ""
+			SAVELOCATION = SAVE_LOCATION + SAVE_FILENAME + "." + SAVE_FORMAT
 			print("Recording locally: " + str(SAVE))
-			print("Recording stored in: " + SAVE_LOCATION + SAVE_FILENAME + "." + SAVE_FORMAT)
+			print("Recording stored in: " + SAVELOCATION)
 			print("Note: Preview is not available when saving the stream.")
-			SAVELOCATION=SAVE_LOCATION + SAVE_FILENAME + "." + SAVE_FORMAT
-			subprocess.Popen("ffmpeg -i 'udp://:8554' -fflags nobuffer -f:v mpegts -probesize 8192 " + SAVELOCATION, shell=True)
+			subprocess.Popen("ffmpeg -i 'udp://:8554' -fflags nobuffer -f:v mpegts -probesize 8192 " + TS_PARAMS + SAVELOCATION, shell=True)
 		if sys.version_info.major >= 3:
 			MESSAGE = bytes(MESSAGE, "utf-8")
 		print("Press ctrl+C to quit this application.\n")
