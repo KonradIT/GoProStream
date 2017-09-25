@@ -31,7 +31,7 @@ VERBOSE=False
 RECORD=False
 ##
 ## Saves the feed to a custom location
-SAVE=True
+SAVE=False
 SAVE_FILENAME="goprofeed3"
 SAVE_FORMAT="ts"
 SAVE_LOCATION="/tmp/"
@@ -105,7 +105,7 @@ def gopro_live():
 			text=re.sub(r'\W+', '', Password)
 			urllib.request.urlopen("http://10.5.5.9/camera/PV?t=" + text + "&p=%02")
 			subprocess.Popen("ffplay " + URL, shell=True)
-		
+
 
 
 def quit_gopro(signal, frame):
