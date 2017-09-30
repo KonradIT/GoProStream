@@ -47,7 +47,7 @@ def gopro_live():
 	response_raw = urllib.request.urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
 	jsondata=json.loads(response_raw)
 	response=jsondata["info"]["firmware_version"]
-	if "HD4" in response or "HD3.2" in response or "HD5" in response or "HX" in response:
+	if "HD4" in response or "HD3.2" in response or "HD5" in response or "HX" in response or "HD6" in response:
 		print(jsondata["info"]["model_name"]+"\n"+jsondata["info"]["firmware_version"])
 		##
 		## HTTP GETs the URL that tells the GoPro to start streaming.
