@@ -20,6 +20,7 @@ from time import sleep
 import signal
 import json
 import re
+import http
 
 def get_command_msg(id):
 	return "_GPHD_:%u:%u:%d:%1lf\n" % (0, 0, 2, 0)
@@ -44,10 +45,14 @@ def gopro_live():
 
 	MESSAGE = get_command_msg(KEEP_ALIVE_CMD)
 	URL = "http://10.5.5.9:8080/live/amba.m3u8"
-	response_raw = urllib.request.urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
-	jsondata=json.loads(response_raw)
-	response=jsondata["info"]["firmware_version"]
+	try:
+		response_raw = urllib.request.urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
+		jsondata=json.loads(response_raw)
+		response=jsondata["info"]["firmware_version"]
+	except http.client.BadStatusLine:
+		response = urllib.request.urlopen('http://10.5.5.9/camera/cv').read().decode('utf-8')
 	if "HD4" in response or "HD3.2" in response or "HD5" in response or "HX" in response or "HD6" in response:
+		print("branch HD4")
 		print(jsondata["info"]["model_name"]+"\n"+jsondata["info"]["firmware_version"])
 		##
 		## HTTP GETs the URL that tells the GoPro to start streaming.
@@ -97,8 +102,9 @@ def gopro_live():
 			sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 			sleep(KEEP_ALIVE_PERIOD/1000)
 	else:
-		response = urllib.request.urlopen('http://10.5.5.9/camera/cv').read()
-		if b"Hero3" in response:
+		print("branch hero3"+response)
+		if "Hero3" in response or "HERO3+" in response:
+			print("branch hero3")
 			PASSWORD=urllib.request.urlopen("http://10.5.5.9/bacpac/sd").read()
 			print("HERO3/3+/2 camera")
 			Password =  str(PASSWORD, 'utf-8')
