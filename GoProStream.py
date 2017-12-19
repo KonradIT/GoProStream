@@ -14,7 +14,14 @@
 
 import sys
 import socket
-import urllib.request
+#from urllib.request import urlopen --> module import error
+# https://stackoverflow.com/questions/2792650/python3-error-import-error-no-module-name-urllib2
+try:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+except ImportError:
+    # Fall back to Python 2's urllib2
+    from urllib2 import urlopen
 import subprocess
 from time import sleep
 import signal
@@ -46,11 +53,12 @@ def gopro_live():
 	MESSAGE = get_command_msg(KEEP_ALIVE_CMD)
 	URL = "http://10.5.5.9:8080/live/amba.m3u8"
 	try:
-		response_raw = urllib.request.urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
+        # original code - response_raw = urllib.request.urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
+		response_raw = urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
 		jsondata=json.loads(response_raw)
 		response=jsondata["info"]["firmware_version"]
 	except http.client.BadStatusLine:
-		response = urllib.request.urlopen('http://10.5.5.9/camera/cv').read().decode('utf-8')
+		response = urlopen('http://10.5.5.9/camera/cv').read().decode('utf-8')
 	if "HD4" in response or "HD3.2" in response or "HD5" in response or "HX" in response or "HD6" in response:
 		print("branch HD4")
 		print(jsondata["info"]["model_name"]+"\n"+jsondata["info"]["firmware_version"])
@@ -59,7 +67,7 @@ def gopro_live():
 		##
 		urllib.request.urlopen("http://10.5.5.9/gp/gpControl/execute?p1=gpStream&a1=proto_v2&c1=restart").read()
 		if RECORD:
-			urllib.request.urlopen("http://10.5.5.9/gp/gpControl/command/shutter?p=1").read()
+			urlopen("http://10.5.5.9/gp/gpControl/command/shutter?p=1").read()
 		print("UDP target IP:", UDP_IP)
 		print("UDP target port:", UDP_PORT)
 		print("message:", MESSAGE)
@@ -69,7 +77,7 @@ def gopro_live():
 		if "HX" in response:
 			connectedStatus=False
 			while connectedStatus == False:
-				req=urllib.request.urlopen("http://10.5.5.9/gp/gpControl/status")
+				req=urlopen("http://10.5.5.9/gp/gpControl/status")
 				data = req.read()
 				encoding = req.info().get_content_charset('utf-8')
 				json_data = json.loads(data.decode(encoding))
@@ -105,18 +113,18 @@ def gopro_live():
 		print("branch hero3"+response)
 		if "Hero3" in response or "HERO3+" in response:
 			print("branch hero3")
-			PASSWORD=urllib.request.urlopen("http://10.5.5.9/bacpac/sd").read()
+			PASSWORD=urlopen("http://10.5.5.9/bacpac/sd").read()
 			print("HERO3/3+/2 camera")
 			Password =  str(PASSWORD, 'utf-8')
 			text=re.sub(r'\W+', '', Password)
-			urllib.request.urlopen("http://10.5.5.9/camera/PV?t=" + text + "&p=%02")
+			urlopen("http://10.5.5.9/camera/PV?t=" + text + "&p=%02")
 			subprocess.Popen("ffplay " + URL, shell=True)
 
 
 
 def quit_gopro(signal, frame):
 	if RECORD:
-		urllib.request.urlopen("http://10.5.5.9/gp/gpControl/command/shutter?p=0").read()
+		urlopen("http://10.5.5.9/gp/gpControl/command/shutter?p=0").read()
 	sys.exit(0)
 
 if __name__ == '__main__':
