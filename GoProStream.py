@@ -65,7 +65,7 @@ def gopro_live():
 		##
 		## HTTP GETs the URL that tells the GoPro to start streaming.
 		##
-		urllib.request.urlopen("http://10.5.5.9/gp/gpControl/execute?p1=gpStream&a1=proto_v2&c1=restart").read()
+		urlopen("http://10.5.5.9/gp/gpControl/execute?p1=gpStream&a1=proto_v2&c1=restart").read()
 		if RECORD:
 			urlopen("http://10.5.5.9/gp/gpControl/command/shutter?p=1").read()
 		print("UDP target IP:", UDP_IP)
