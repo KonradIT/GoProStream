@@ -1,6 +1,8 @@
-## GoPro Instant Streaming v1.0
+## GoPro Instant Streaming v1.0_r1
 ##
 ## By @Sonof8Bits and @KonradIT
+##
+## WOL touch by @5perseo, code updated by @podfish
 ##
 ## 1. Connect your desktop or laptop to your GoPro via WIFI.
 ## 2. Set the parameters below.
@@ -10,7 +12,7 @@
 ## GoPro HERO5 (incl. Session), HERO4 (incl. Session), HERO+, HERO3+, HERO3, HERO2 w/ WiFi BacPac.
 ##
 ## That's all! When done, press CTRL+C to quit this application.
-##
+## 
 
 import sys
 import socket
@@ -43,6 +45,10 @@ SAVE=False
 SAVE_FILENAME="goprofeed3"
 SAVE_FORMAT="ts"
 SAVE_LOCATION="/tmp/"
+## for wake_on_lan
+GOPRO_IP = '10.5.5.9'
+GOPRO_MAC = 'DEADBEEF0000'
+
 
 def gopro_live():
 	UDP_IP = "10.5.5.9"
@@ -120,13 +126,32 @@ def gopro_live():
 			urlopen("http://10.5.5.9/camera/PV?t=" + text + "&p=%02")
 			subprocess.Popen("ffplay " + URL, shell=True)
 
-
-
 def quit_gopro(signal, frame):
 	if RECORD:
 		urlopen("http://10.5.5.9/gp/gpControl/command/shutter?p=0").read()
 	sys.exit(0)
 
+def wake_on_lan(macaddress):
+	"""switches on remote computers using WOL. """
+	
+	#check macaddress format and try to compensate
+	if len(macaddress) == 12:
+		pass
+	elif len(macaddress) == 12 + 5:
+		sep = macaddress[2]
+		macaddress = macaddress.replace(sep, '')
+	else:
+		raise ValueError('Incorrect MAC Address Format')
+	#Pad the sync stream
+	data = ''.join(['FFFFFFFFFFFF', macaddress * 20])
+	send_data = bytes.fromhex(data)
+			
+	# Broadcast to lan
+	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+	sock.sendto(send_data, (GOPRO_IP, 9))
+
 if __name__ == '__main__':
+	wake_on_lan(GOPRO_MAC)
 	signal.signal(signal.SIGINT, quit_gopro)
 	gopro_live()
