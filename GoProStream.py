@@ -63,9 +63,14 @@ def gopro_live():
 		response_raw = urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
 		jsondata=json.loads(response_raw)
 		response=jsondata["info"]["firmware_version"]
+		import re
+		match = re.match(r"([a-z]+)([0-9]+)", response, re.I)
+		if match:
+    			model=match.groups()[0]
+		
 	except http.client.BadStatusLine:
 		response = urlopen('http://10.5.5.9/camera/cv').read().decode('utf-8')
-	if "HD4" in response or "HD3.2" in response or "HD5" in response or "HX" in response or "HD6" in response:
+	if model=="HD4" or model=="HD3.2" or model=="HD5" or model=="H" or model=="HX" or model=="HD6":
 		print("branch HD4")
 		print(jsondata["info"]["model_name"]+"\n"+jsondata["info"]["firmware_version"])
 		##
@@ -80,7 +85,7 @@ def gopro_live():
 		print("Recording on camera: " + str(RECORD))
 
 		## GoPro HERO4 Session needs status 31 to be greater or equal than 1 in order to start the live feed.
-		if "HX" in response:
+		if model=="HX" or model=="H":
 			connectedStatus=False
 			while connectedStatus == False:
 				req=urlopen("http://10.5.5.9/gp/gpControl/status")
