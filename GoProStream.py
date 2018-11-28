@@ -9,7 +9,7 @@
 ## 3. Run this script.
 ##
 ## Supported cameras:
-## GoPro HERO5 (incl. Session), HERO4 (incl. Session), HERO+, HERO3+, HERO3, HERO2 w/ WiFi BacPac.
+## GoPro HERO5 (incl. Session), HERO4 (incl. Session), HERO+, HERO3+, HERO3, HERO2 w/ WiFi BacPac, HERO 2018.
 ##
 ## That's all! When done, press CTRL+C to quit this application.
 ## 
