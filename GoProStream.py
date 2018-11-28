@@ -9,7 +9,7 @@
 ## 3. Run this script.
 ##
 ## Supported cameras:
-## GoPro HERO5 (incl. Session), HERO4 (incl. Session), HERO+, HERO3+, HERO3, HERO2 w/ WiFi BacPac.
+## GoPro HERO5 (incl. Session), HERO4 (incl. Session), HERO+, HERO3+, HERO3, HERO2 w/ WiFi BacPac, HERO 2018.
 ##
 ## That's all! When done, press CTRL+C to quit this application.
 ## 
@@ -63,14 +63,11 @@ def gopro_live():
 		response_raw = urlopen('http://10.5.5.9/gp/gpControl').read().decode('utf-8')
 		jsondata=json.loads(response_raw)
 		response=jsondata["info"]["firmware_version"]
-		import re
-		match = re.match(r"([a-z]+)([0-9]+)", response, re.I)
-		if match:
-    			model=match.groups()[0]
-		
+		model=response.split('.')[0]
 	except http.client.BadStatusLine:
 		response = urlopen('http://10.5.5.9/camera/cv').read().decode('utf-8')
-	if model=="HD4" or model=="HD3.2" or model=="HD5" or model=="H" or model=="HX" or model=="HD6":
+    
+	if model=="HD4" or model=="HD3" or model=="HD5" or model=="H18" or model=="HX" or model=="HD6":
 		print("branch HD4")
 		print(jsondata["info"]["model_name"]+"\n"+jsondata["info"]["firmware_version"])
 		##
@@ -85,7 +82,7 @@ def gopro_live():
 		print("Recording on camera: " + str(RECORD))
 
 		## GoPro HERO4 Session needs status 31 to be greater or equal than 1 in order to start the live feed.
-		if model=="HX" or model=="H":
+		if model=="HX" or model=="H18":
 			connectedStatus=False
 			while connectedStatus == False:
 				req=urlopen("http://10.5.5.9/gp/gpControl/status")
@@ -121,7 +118,7 @@ def gopro_live():
 			sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 			sleep(KEEP_ALIVE_PERIOD/1000)
 	else:
-		print("branch hero3"+response)
+		print("branch hero3 "+response)
 		if "Hero3" in response or "HERO3+" in response:
 			print("branch hero3")
 			PASSWORD=urlopen("http://10.5.5.9/bacpac/sd").read()
