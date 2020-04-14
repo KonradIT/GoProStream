@@ -33,6 +33,10 @@ Verbose flag for FFmpeg
 
 Sends a record command to the camera, camera must be in video mode!
 
+    STREAM=False
+
+Creates a local stream via FFMPEG with minimized lag for use in OBS, camera must be in video mode!
+
     SAVE=False
 
 Save the gopro live feed to your machine
