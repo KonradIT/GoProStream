@@ -31,11 +31,11 @@ Verbose flag for FFmpeg
 
     RECORD=False
 
-Creates a local stream via FFMPEG with minimized lag for use in OBS, camera must be in video mode!
+Sends a record command to the camera, camera must be in video mode!
 
     STREAM=False
 
-Sends a record command to the camera, camera must be in video mode!
+Creates a local stream via FFMPEG with minimized lag for use in OBS, camera must be in video mode!
 
     SAVE=False
 
